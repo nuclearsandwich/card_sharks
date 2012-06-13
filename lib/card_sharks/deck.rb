@@ -16,11 +16,15 @@ class Deck
 
   def sort!
     @deck.sort_by do |card|
-      card.suit 
+      card.suit
     end
   end
 
   def shuffle!
     @deck.shuffle!
+  end
+
+  def remove_top_card
+    @deck.delete_at(0)
   end
 end
