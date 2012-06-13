@@ -1,8 +1,13 @@
+require "./Deck"
+require "./Player"
+require "./Dealer"
+
 # Blackjack.rb version 3.1
 
 # Notes on progress / current problems:
-
-
+	# 37: invalid break
+	# 21:in `round_of_blackjack': undefined method `credits' for #<Player:0x827260 @credits=150, @hand=[]> (NoMethodError) - resolved
+	# 24:in `block in round_of_blackjack': undefined method `remove_top_card' for #<Array:0x827ea4> (NoMethodError)
 
 class Blackjack
 	def initialize
@@ -21,27 +26,28 @@ class Blackjack
 		# Then ditto for the dealer
 		2.times { @dealer.deal(@deck.remove_top_card) }
 		# Announce the second of the dealer's two cards
+		puts "The dealer has been dealt two cards, and is showing #{@dealer.hand[1]}."
 
 		# First, the player's turn:
-		# Ask if hit/stay, and loop if hit
-		if @player.evaluate_hand_score(@player) == 21
-			# If their initial deal already == 21, go to end_round
-			end_round("21")
-		else
-			hit_or_stay
-		end
+		hit_or_stay
 
 		def hit_or_stay
+			# # break if initial deal == 21
+			# if evaluate_hand_score(@player.hand) == 21
+			# 	break
+			# end
+
 			until gets.chomp.downcase == "stay"
 				@player.deal(@deck.remove_top_card)
 
-				if @player.hand_value == 21
+				if evaluate_hand_score(@player.hand) == 21
 					# Break player out of until-loop when they hit towards 21
 					puts "You have a score of 21 with: #{@player.hand.join(", ")}."
 					break
 				else
-					if @player.hand_value > 21
-						end_round("bust")
+					if evaluate_hand_score(@player.hand) > 21
+						puts "You busted with #{evaluate_hand_score(@player.hand)}."
+						end_round("lose")
 					else
 						hit_or_stay
 					end
@@ -50,13 +56,12 @@ class Blackjack
 		end
 
 		def evaluate_hand_score(hand)
-			# Determine if the hand contains an Ace
-			# If so, remove it from the array, and .push it to the last place
+			# If hand contains an Ace, remove it from the array, and .push it to the last place
 			# This way, Aces get evaluated last (11 or 1)
 			y = 0        # indexing for the Ace-checking
-			while y < @player.hand.length
-				if @player.hand[y].include?("Ace")
-					@player.hand.push(@player.hand.delete_at(y))
+			while y < hand.length
+				if hand[y].include?("Ace")
+					hand.push(hand.delete_at(y))
 					y += 1
 				else
 					y += 1
@@ -65,11 +70,11 @@ class Blackjack
 
 			hand_score = 0
 			x = 0       # indexing for the hand scoring, below
-			while x < @player.hand.length
-				if @player.hand[x].include?("Jack") || @player.hand[x].include?("Queen") || @player.hand[x].include?("King")
+			while x < hand.length
+				if hand[x].include?("Jack") || hand[x].include?("Queen") || hand[x].include?("King")
 					hand_score += 10
 					x += 1
-				elsif @player.hand[x].include?("Ace")
+				elsif hand[x].include?("Ace")
 					if (hand_score + 11) > 21
 						hand_score += 1
 					else
@@ -78,7 +83,7 @@ class Blackjack
 					x += 1	
 				elsif
 					# Strip everything but the numbers from the string
-					hand_score += @player.hand[x].gsub(/[^0-9]/, '').to_i
+					hand_score += hand[x].gsub(/[^0-9]/, '').to_i
 					x += 1
 				end
 			end
@@ -117,51 +122,72 @@ class Blackjack
 			end
 		end
 
+		def end_round(conditional)
+			if conditional == "win"
+				@player.credits += (@player_bid * 2)
+				# Double the player's bid and add that number to their credits pool.
+			elsif conditional == "lose"
+				@player.credits -= @player_bid
+				# Deduct the player's bid from their credit pool.
+			else
+				# On a push (tie), do nothing to the player's credit pool.
+			end
+		end
+
 		# Save score as an integer in players_score
 		players_score = evaluate_hand_score(@player.hand)
 		# Determine if the player's hand is a blackjack
 		player_has_blackjack = is_blackjack(@player.hand)
 
+		#Dealer's turn
 		# Until the value of dealers_hand > 15, they hit
-		until evaluate_hand_score(dealers_hand) > 15
-			dealers_hand.push(shuffled_deck[deck_index])
-			puts "The dealer adds a #{shuffled_deck[deck_index]} to their hand."
-			deck_index += 1
+		until evaluate_hand_score(@dealer.hand) > 15
+			was_dealt = @dealer.deal(@deck.remove_top_card)
+			puts "The dealer adds a #{was_dealt} to their hand."
 		end
-		dealers_score = evaluate_hand_score(dealers_hand)
+		dealers_score = evaluate_hand_score(@dealer.hand)
 		# The dealer busts if over 21
 		if dealers_score > 21
 			puts "The dealer busts with #{dealers_score}."
-			round_result("win", player_credits, player_bid, dealers_hand)
+			end_round("win")
 		end
-		dealer_has_blackjack = is_blackjack(dealers_hand)
+		dealer_has_blackjack = is_blackjack(@dealer.hand)
 
 		# Final scoring
 		# First, does anyone have a Blackjack?
 		if player_has_blackjack == true || dealer_has_blackjack == true
 			if player_has_blackjack == true && dealer_has_blackjack == false
 				puts "Your Blackjack trumps the dealer."
-				round_result("win", player_credits, player_bid, dealers_hand)
+				end_round("win")
 			elsif player_has_blackjack == false && dealer_has_blackjack == true
 				puts "The dealer's Blackjack trumps your hand."
-				round_result("lose", player_credits, player_bid, dealers_hand)
+				end_round("lose")
 			elsif player_has_blackjack == true && dealer_has_blackjack == true
 				puts "Both you and the dealer have a Blackjack."
-				round_result("tie", player_credits, player_bid, dealers_hand)
+				end_round("push")
 			end
 
 		# Second, if no Blackjacks are in anyone's hand:
 		elsif players_score > dealers_score
 			puts "Your #{players_score} whomps the dealer's meager #{dealers_score}."
-			round_result("win", player_credits, player_bid, dealers_hand)
+			end_round("win")
 		elsif dealers_score > players_score
 			puts "The dealer's #{dealers_score} eats your #{players_score} for breakfast."
-			round_result("lose", player_credits, player_bid, dealers_hand)
+			end_round("lose")
 		else
-			round_result("tie", player_credits, player_bid, dealers_hand)
+			end_round("push")
 		end
 	end
 end
 # ^ This end ends the Blackjack class
 
-Blackjack
+def play_a_game
+	puts "Would you like to play a round of blackjack?"
+	if gets.chomp.downcase == "yes"
+		Blackjack.new.round_of_blackjack
+	else 
+		puts "Alrighty then, another time!"
+	end
+end
+
+play_a_game
