@@ -12,7 +12,7 @@ require "./Dealer"
 class Blackjack
 	def initialize
 		@deck = Deck.new.shuffle!
-	
+		
 		@player = Player.new
 		@dealer = Dealer.new
 	end

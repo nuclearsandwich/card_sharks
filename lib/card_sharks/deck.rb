@@ -14,6 +14,10 @@ class Deck
     end
   end
 
+  def tell_deck
+    @deck
+  end
+
   def sort!
     @deck.sort_by do |card|
       card.suit
