@@ -5,14 +5,24 @@ require "./Dealer"
 # Blackjack.rb version 3.1
 
 # Notes on progress / current problems:
-	# 37: invalid break
 	# 21:in `round_of_blackjack': undefined method `credits' for #<Player:0x827260 @credits=150, @hand=[]> (NoMethodError) - resolved
-	# 25:in `block in round_of_blackjack': undefined method `remove_top_card' for #<Array:0x827ea4> (NoMethodError)
+	
+	# 24:in `block in round_of_blackjack': undefined method `remove_top_card' for #<Array:0x827ea4> (NoMethodError)
+		# Previously, when creating @deck:
+			# @deck = Deck.new.shuffle!
+		# ...this was creating the error, above. I separated it into two lines:
+			# @deck = Deck.new
+			# @deck.shuffle!
+		# ...this now no longer produces the error. I see, now, that I was attempting to call .shuffle! before
+		# it had even been created/defined.
+
+
 
 class Blackjack
 	def initialize
-		@deck = Deck.new.shuffle!
-		
+		@deck = Deck.new
+		@deck.shuffle!
+
 		@player = Player.new
 		@dealer = Dealer.new
 	end
@@ -21,22 +31,26 @@ class Blackjack
 		@player_bid = @player.make_bid
 		@player_credits = @player.credits
 
+		puts @deck.tell_deck
 		# Deal two cards to player ("physically" removing them from @deck)
 		2.times { @player.deal(@deck.remove_top_card) }
+		puts @player.tell_hand
 		# Then ditto for the dealer
 		2.times { @dealer.deal(@deck.remove_top_card) }
+		puts @dealer.tell_hand
 		# Announce the second of the dealer's two cards
-		puts "The dealer has been dealt two cards, and is showing #{@dealer.hand[1]}."
+		puts "The dealer has been dealt two cards, and is showing #{@dealer.tell_hand[1]}."
+		puts @deck.tell_deck
 
 		# First, the player's turn:
-		hit_or_stay
+		if evaluate_hand_score(@player.hand) == 21
+			# If initial deal == 21, skip hit_or_stay
+		else
+			# Go into hit_or_stay if initial deal != 21
+			hit_or_stay
+		end
 
 		def hit_or_stay
-			# # break if initial deal == 21
-			if evaluate_hand_score(@player.hand) == 21
-				break
-			end
-
 			until gets.chomp.downcase == "stay"
 				@player.deal(@deck.remove_top_card)
 
@@ -79,8 +93,8 @@ class Blackjack
 						hand_score += 1
 					else
 						hand_score += 11
-					end 
-					x += 1	
+					end
+					x += 1
 				elsif
 					# Strip everything but the numbers from the string
 					hand_score += hand[x].gsub(/[^0-9]/, '').to_i
@@ -124,11 +138,11 @@ class Blackjack
 
 		def end_round(conditional)
 			if conditional == "win"
-				@player.credits += (@player_bid * 2)
 				# Double the player's bid and add that number to their credits pool.
+				@player.credits += (@player_bid * 2)
 			elsif conditional == "lose"
-				@player.credits -= @player_bid
 				# Deduct the player's bid from their credit pool.
+				@player.credits -= @player_bid
 			else
 				# On a push (tie), do nothing to the player's credit pool.
 			end
