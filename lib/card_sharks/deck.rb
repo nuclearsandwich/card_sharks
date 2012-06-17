@@ -15,7 +15,7 @@ class Deck
   end
 
   def tell_deck
-    @deck
+    @deck.join(", ")
   end
 
   def sort!
@@ -32,3 +32,17 @@ class Deck
     @deck.delete_at(0)
   end
 end
+
+# This test appropriately creates a deck, populates it, shuffles it, and when calling remove_top_card,
+# removes the very first card, adds it to waffles, and when printing out the deck again, the first
+# card has, indeed, been removed...
+# deck = Deck.new
+# deck.shuffle!
+# puts deck.tell_deck.join(", ")
+# puts
+# waffles = []
+# puts waffles
+# waffles.push(deck.remove_top_card)
+# puts waffles
+# puts
+# puts deck.tell_deck.join(", ")
