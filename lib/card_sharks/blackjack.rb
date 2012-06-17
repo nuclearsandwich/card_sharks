@@ -5,9 +5,9 @@ require "./Dealer"
 # Blackjack.rb version 3.1
 
 # Notes on progress / current problems:
-	# 37: invalid break
+	# 37: invalid break - reworked to just skip to dealers_turn
 	# 21:in `round_of_blackjack': undefined method `credits' for #<Player:0x827260 @credits=150, @hand=[]> (NoMethodError) - resolved
-	# 24:in `block in round_of_blackjack': undefined method `remove_top_card' for #<Array:0x827ea4> (NoMethodError)
+	# 25:in `block in round_of_blackjack': undefined method `remove_top_card' for #<Array:0x827ea4> (NoMethodError)
 
 class Blackjack
 	def initialize
@@ -33,9 +33,9 @@ class Blackjack
 
 		def hit_or_stay
 			# # break if initial deal == 21
-			# if evaluate_hand_score(@player.hand) == 21
-			# 	break
-			# end
+			if evaluate_hand_score(@player.hand) == 21
+				dealers_turn
+			end
 
 			until gets.chomp.downcase == "stay"
 				@player.deal(@deck.remove_top_card)
@@ -134,24 +134,27 @@ class Blackjack
 			end
 		end
 
-		# Save score as an integer in players_score
-		players_score = evaluate_hand_score(@player.hand)
-		# Determine if the player's hand is a blackjack
-		player_has_blackjack = is_blackjack(@player.hand)
-
 		#Dealer's turn
-		# Until the value of dealers_hand > 15, they hit
-		until evaluate_hand_score(@dealer.hand) > 15
-			was_dealt = @dealer.deal(@deck.remove_top_card)
-			puts "The dealer adds a #{was_dealt} to their hand."
+		def dealers_turn
+			# Until the value of dealers_hand > 15, they hit
+			until evaluate_hand_score(@dealer.hand) > 15
+				was_dealt = @dealer.deal(@deck.remove_top_card)
+				puts "The dealer adds a #{was_dealt} to their hand."
+			end
 		end
+
 		dealers_score = evaluate_hand_score(@dealer.hand)
+		dealer_has_blackjack = is_blackjack(@dealer.hand)
 		# The dealer busts if over 21
 		if dealers_score > 21
 			puts "The dealer busts with #{dealers_score}."
 			end_round("win")
 		end
-		dealer_has_blackjack = is_blackjack(@dealer.hand)
+
+		# Save score as an integer in players_score
+		players_score = evaluate_hand_score(@player.hand)
+		# Determine if the player's hand is a blackjack
+		player_has_blackjack = is_blackjack(@player.hand)
 
 		# Final scoring
 		# First, does anyone have a Blackjack?
