@@ -14,6 +14,10 @@ class Deck
     end
   end
 
+  def deck
+    @deck
+  end
+
   def tell_deck
     @deck.join(", ")
   end

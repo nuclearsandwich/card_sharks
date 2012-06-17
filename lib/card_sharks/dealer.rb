@@ -7,7 +7,11 @@ class Dealer
     @hand << card
   end
 
-  def tell_hand
+  def hand
     @hand
+  end
+
+  def tell_hand
+    @hand.join(", ")
   end
 end

@@ -5,18 +5,7 @@ require "./Dealer"
 # Blackjack.rb version 3.1
 
 # Notes on progress / current problems:
-	# 21:in `round_of_blackjack': undefined method `credits' for #<Player:0x827260 @credits=150, @hand=[]> (NoMethodError) - resolved
-	
-	# 24:in `block in round_of_blackjack': undefined method `remove_top_card' for #<Array:0x827ea4> (NoMethodError)
-		# Previously, when creating @deck:
-			# @deck = Deck.new.shuffle!
-		# ...this was creating the error, above. I separated it into two lines:
-			# @deck = Deck.new
-			# @deck.shuffle!
-		# ...this now no longer produces the error. I see, now, that I was attempting to call .shuffle! before
-		# it had even been created/defined.
-
-
+	# 78:in `evaluate_hand_score': undefined method `gsub' for Six of Diamonds:Card (NoMethodError)
 
 class Blackjack
 	def initialize
@@ -31,24 +20,13 @@ class Blackjack
 		@player_bid = @player.make_bid
 		@player_credits = @player.credits
 
-		puts @deck.tell_deck
 		# Deal two cards to player ("physically" removing them from @deck)
 		2.times { @player.deal(@deck.remove_top_card) }
-		puts @player.tell_hand
 		# Then ditto for the dealer
 		2.times { @dealer.deal(@deck.remove_top_card) }
-		puts @dealer.tell_hand
 		# Announce the second of the dealer's two cards
-		puts "The dealer has been dealt two cards, and is showing #{@dealer.tell_hand[1]}."
-		puts @deck.tell_deck
-
-		# First, the player's turn:
-		if evaluate_hand_score(@player.hand) == 21
-			# If initial deal == 21, skip hit_or_stay
-		else
-			# Go into hit_or_stay if initial deal != 21
-			hit_or_stay
-		end
+		puts "You have been dealt: #{@player.tell_hand}."
+		puts "The dealer has been dealt two cards, and is showing #{@dealer.hand[1]}."
 
 		def hit_or_stay
 			until gets.chomp.downcase == "stay"
@@ -146,6 +124,14 @@ class Blackjack
 			else
 				# On a push (tie), do nothing to the player's credit pool.
 			end
+		end
+
+		# First, the player's turn:
+		if evaluate_hand_score(@player.hand) == 21
+			# If initial deal == 21, skip hit_or_stay
+		else
+			# Go into hit_or_stay if initial deal != 21
+			hit_or_stay
 		end
 
 		# Save score as an integer in players_score
