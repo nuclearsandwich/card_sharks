@@ -31,9 +31,6 @@ require "./Dealer"
 	# The dealer adds a [Five of Hearts, Jack of Diamonds, Six of Hearts] to their hand.
 		# ^ When the dealer is being dealt a card, their entire hand is being told
 
-	# If a player choses to stay with their initial deal, they type "stay" once to stay. However, if they hit once,
-	# they have to type "stay" twice to stay. 
-
 class Blackjack
 	def initialize
 		@deck = Deck.new
@@ -69,8 +66,6 @@ class Blackjack
 					if evaluate_hand_score(@player.hand) > 21
 						puts "You busted with #{evaluate_hand_score(@player.hand)}."
 						end_round("lose")
-					else
-						hit_or_stay
 					end
 				end
 			end
