@@ -31,6 +31,14 @@ require "./Dealer"
 	# The dealer adds a [Five of Hearts, Jack of Diamonds, Six of Hearts] to their hand.
 		# ^ When the dealer is being dealt a card, their entire hand is being told
 
+	# Would you like to play a round of blackjack?
+	# yes
+	# How many of your 150 credits would you like to wager?
+	# 25
+	# You have been dealt: Ten of Spades, Ace of Clubs.
+	# The dealer has been dealt two cards, and is showing Four of Hearts.
+	# blackjack.rb:168:in `round_of_blackjack': undefined method `[]' for #<Deck:0x8bffc4> (NoMethodError)
+
 class Blackjack
 	def initialize
 		@deck = Deck.new
@@ -165,7 +173,8 @@ class Blackjack
 		dealer_has_blackjack = is_blackjack(@dealer.hand)
 		# Until the value of dealers_hand > 15, they hit
 		until dealers_score > 15
-			was_dealt = @dealer.deal(@deck.remove_top_card)
+			was_dealt = @deck[0]
+			@dealer.deal(@deck.remove_top_card)
 			puts "The dealer adds a #{was_dealt} to their hand."
 			dealers_score = evaluate_hand_score(@dealer.hand)
 		end
