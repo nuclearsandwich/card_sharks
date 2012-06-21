@@ -15,8 +15,8 @@ class Deck
     end
   end
 
-  def deck
-    @deck
+  def deck(x)
+    @deck[x]
   end
 
   def tell_deck
