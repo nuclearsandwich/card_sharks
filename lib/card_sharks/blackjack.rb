@@ -28,11 +28,6 @@ require "./Dealer"
 		# ^ Has to do with adding (@player_bid * 2) to @player.credits
 		# On the plus side, it is adding card values properly (for the most part)
 
-	# The dealer adds a [Five of Hearts, Jack of Diamonds, Six of Hearts] to their hand.
-		# ^ When the dealer is being dealt a card, their entire hand is being told
-
-	# After hitting the first time, player is no longer being prompted with "Hit or stay?"
-
 class Blackjack
 	def initialize
 		@deck = Deck.new
@@ -57,18 +52,20 @@ class Blackjack
 		def hit_or_stay
 			puts "Hit or stay?"
 			until gets.chomp.downcase == "stay"
-				was_dealt = @player.deal(@deck.remove_top_card)
+				@player.deal(@deck.remove_top_card)
 				puts "Your hand contains #{@player.tell_hand}."
 
 				if evaluate_hand_score(@player.hand) == 21
 					# Break player out of until-loop when they hit towards 21
 					puts "You have a score of 21 with: #{@player.hand.join(", ")}."
 					break
-				else
+				elsif
 					if evaluate_hand_score(@player.hand) > 21
 						puts "You busted with #{evaluate_hand_score(@player.hand)}."
 						end_round("lose")
 					end
+				else
+					puts "Hit or stay?"
 				end
 			end
 		end
