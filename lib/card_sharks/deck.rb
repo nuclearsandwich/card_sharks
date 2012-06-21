@@ -9,8 +9,9 @@ class Deck
     SIZE.times do |i|
       rank = Card.ranks[i % 13]
       suit = Card.suits[i % 4]
+      value = Card.values[i % 13]
 
-      @deck << Card.new(suit, rank)
+      @deck << Card.new(suit, rank, value)
     end
   end
 
@@ -36,17 +37,3 @@ class Deck
     @deck.delete_at(0)
   end
 end
-
-# This test appropriately creates a deck, populates it, shuffles it, and when calling remove_top_card,
-# removes the very first card, adds it to waffles, and when printing out the deck again, the first
-# card has, indeed, been removed...
-# deck = Deck.new
-# deck.shuffle!
-# puts deck.tell_deck.join(", ")
-# puts
-# waffles = []
-# puts waffles
-# waffles.push(deck.remove_top_card)
-# puts waffles
-# puts
-# puts deck.tell_deck.join(", ")
