@@ -15,7 +15,8 @@ class Player
     end
     puts "How many of your #{@credits} credits would you like to wager?"
     bid = gets.chomp.to_i
-    if (bid > 0 && bid <= @credits)
+    if bid > 0 && bid <= @credits
+      bid
     else 
       make_bid
     end
