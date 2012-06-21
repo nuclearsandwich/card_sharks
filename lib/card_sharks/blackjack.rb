@@ -9,24 +9,23 @@ require "./Dealer"
 	# yes
 	# How many of your 150 credits would you like to wager?
 	# 25
-	# You have been dealt: Two of Clubs, Seven of Hearts.
-	# The dealer has been dealt two cards, and is showing Four of Spades.
-	# hit   <- giant problem here: player is not being told of their updated hand,
-	# hit   <- also, they are not being asked hit or stay
-	# hit
-	# You have a score of 21 with: Two of Clubs, Seven of Hearts, Three of Spades, Six of Spades, Three of Hearts.
-	# hit   <- aaaaaand they can hit on a 21.
-	# You busted with 31.
-	# blackjack.rb:127:in `-': nil can't be coerced into Fixnum (TypeError)   <- has to do with deducting the player's bid from their credit pool
-
-	# You have been dealt: Eight of Hearts, Queen of Hearts.
-	# The dealer has been dealt two cards, and is showing Ace of Diamonds.
+	# You have been dealt: Four of Hearts, Seven of Hearts.
+	# The dealer has been dealt two cards, and is showing Two of Diamonds.
 	# Hit or stay?
-	# stay
-	# Your 18 whomps the dealer's meager 16.
-	# blackjack.rb:133:in `end_round': undefined method `*' for nil:NilClass (NoMethodError)
-		# ^ Has to do with adding (@player_bid * 2) to @player.credits
-		# On the plus side, it is adding card values properly (for the most part)
+	# hit
+	# Your hand contains Four of Hearts, Seven of Hearts, Jack of Clubs.
+	# Your hand's score is 21.
+	# The dealer adds a Queen of Spades to their hand.
+	# The dealer busts with 22.
+	# This round, the dealer's hand contained: Queen of Hearts, Two of Diamonds, Queen of Spades.
+	# Would you like to play a round of blackjack?
+	# yes
+	# How many of your 150 credits would you like to wager?
+	# 25
+	# You have been dealt: Three of Spades, Ace of Diamonds.
+	# The dealer has been dealt two cards, and is showing Eight of Clubs.
+	# Hit or stay?
+		# ^ latest problem, credits are not being deducted
 
 class Blackjack
 	def initialize
@@ -57,7 +56,7 @@ class Blackjack
 
 				if evaluate_hand_score(@player.hand) == 21
 					# Break player out of until-loop when they hit towards 21
-					puts "You have a score of 21 with: #{@player.hand.join(", ")}."
+					puts "Your hand's score is 21."
 					break
 				elsif
 					if evaluate_hand_score(@player.hand) > 21
@@ -137,11 +136,11 @@ class Blackjack
 			puts "This round, the dealer's hand contained: #{@dealer.tell_hand}."
 			if conditional == "win"
 				# Double the player's bid and add that number to their credits pool.
-				@player.credits += (@player_bid * 2)
+				@player.update_credits(@player_bid * 2)
 				play_a_game
 			elsif conditional == "lose"
 				# Deduct the player's bid from their credit pool.
-				@player.credits -= @player_bid
+				@player.update_credits(@player_bid * -1)
 				play_a_game
 			else
 				# On a push (tie), do nothing to the player's credit pool.
