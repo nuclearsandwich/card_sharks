@@ -19,6 +19,21 @@ require "./Dealer"
 	# You busted with 31.
 	# blackjack.rb:127:in `-': nil can't be coerced into Fixnum (TypeError)   <- has to do with deducting the player's bid from their credit pool
 
+	# You have been dealt: Eight of Hearts, Queen of Hearts.
+	# The dealer has been dealt two cards, and is showing Ace of Diamonds.
+	# Hit or stay?
+	# stay
+	# Your 18 whomps the dealer's meager 16.
+	# blackjack.rb:133:in `end_round': undefined method `*' for nil:NilClass (NoMethodError)
+		# ^ Has to do with adding (@player_bid * 2) to @player.credits
+		# On the plus side, it is adding card values properly (for the most part)
+
+	# The dealer adds a [Five of Hearts, Jack of Diamonds, Six of Hearts] to their hand.
+		# ^ When the dealer is being dealt a card, their entire hand is being told
+
+	# If a player choses to stay with their initial deal, they type "stay" once to stay. However, if they hit once,
+	# they have to type "stay" twice to stay. 
+
 class Blackjack
 	def initialize
 		@deck = Deck.new
@@ -41,12 +56,10 @@ class Blackjack
 		puts "The dealer has been dealt two cards, and is showing #{@dealer.hand[1]}."
 
 		def hit_or_stay
-			def initialize
-				puts "Hit or stay?"
-			end
-
+			puts "Hit or stay?"
 			until gets.chomp.downcase == "stay"
-				@player.deal(@deck.remove_top_card)
+				was_dealt = @player.deal(@deck.remove_top_card)
+				puts "Your hand contains #{@player.tell_hand}."
 
 				if evaluate_hand_score(@player.hand) == 21
 					# Break player out of until-loop when they hit towards 21
@@ -79,18 +92,14 @@ class Blackjack
 			hand_score = 0
 			x = 0       # indexing for the hand scoring, below
 			while x < hand.length
-				if hand[x].include?("Jack") || hand[x].include?("Queen") || hand[x].include?("King")
-					hand_score += 10
-					x += 1
-				elsif hand[x].include?("Ace")
+				if hand[x].include?("Ace")
 					if (hand_score + 11) > 21
 						hand_score += 1
 					else
 						hand_score += 11
 					end
 					x += 1
-				elsif
-					# Strip everything but the numbers from the string
+				else
 					hand_score += hand[x].value.to_i
 					x += 1
 				end
@@ -131,6 +140,7 @@ class Blackjack
 		end
 
 		def end_round(conditional)
+			puts "This round, the dealer's hand contained: #{@dealer.tell_hand}."
 			if conditional == "win"
 				# Double the player's bid and add that number to their credits pool.
 				@player.credits += (@player_bid * 2)
