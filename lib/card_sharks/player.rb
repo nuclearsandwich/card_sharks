@@ -33,4 +33,8 @@ class Player
   def tell_hand
     @hand.join(", ")
   end
+
+  def update_credits(amount)
+    @credits += amount
+  end
 end
