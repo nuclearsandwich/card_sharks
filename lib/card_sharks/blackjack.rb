@@ -28,6 +28,8 @@ require "./Dealer"
 		# ^ Has to do with adding (@player_bid * 2) to @player.credits
 		# On the plus side, it is adding card values properly (for the most part)
 
+	# I think I've narrowed down the problems (above) - @player_bid is resulting in nil (test on lines 46-49)
+
 class Blackjack
 	def initialize
 		@deck = Deck.new
@@ -40,6 +42,11 @@ class Blackjack
 	def round_of_blackjack
 		@player_bid = @player.make_bid
 		@player_credits = @player.credits
+
+		# v Results in a blank space at @player_bid - nil?
+		puts "Your bid for this round is #{@player_bid}."
+		puts "waffles" if @player_bid == nil
+		# ^ is resulting in nil.
 
 		# Deal two cards to player ("physically" removing them from @deck)
 		2.times { @player.deal(@deck.remove_top_card) }
@@ -138,11 +145,15 @@ class Blackjack
 			if conditional == "win"
 				# Double the player's bid and add that number to their credits pool.
 				@player.credits += (@player_bid * 2)
+				play_a_game
 			elsif conditional == "lose"
 				# Deduct the player's bid from their credit pool.
 				@player.credits -= @player_bid
+				play_a_game
 			else
 				# On a push (tie), do nothing to the player's credit pool.
+				puts "This round was a push."
+				play_a_game
 			end
 		end
 
