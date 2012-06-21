@@ -5,7 +5,19 @@ require "./Dealer"
 # Blackjack.rb version 3.1
 
 # Notes on progress / current problems:
-	# 78:in `evaluate_hand_score': undefined method `gsub' for Six of Diamonds:Card (NoMethodError)
+	# Would you like to play a round of blackjack?
+	# yes
+	# How many of your 150 credits would you like to wager?
+	# 25
+	# You have been dealt: Two of Clubs, Seven of Hearts.
+	# The dealer has been dealt two cards, and is showing Four of Spades.
+	# hit   <- giant problem here: player is not being told of their updated hand,
+	# hit   <- also, they are not being asked hit or stay
+	# hit
+	# You have a score of 21 with: Two of Clubs, Seven of Hearts, Three of Spades, Six of Spades, Three of Hearts.
+	# hit   <- aaaaaand they can hit on a 21.
+	# You busted with 31.
+	# blackjack.rb:127:in `-': nil can't be coerced into Fixnum (TypeError)   <- has to do with deducting the player's bid from their credit pool
 
 class Blackjack
 	def initialize
@@ -29,6 +41,10 @@ class Blackjack
 		puts "The dealer has been dealt two cards, and is showing #{@dealer.hand[1]}."
 
 		def hit_or_stay
+			def initialize
+				puts "Hit or stay?"
+			end
+
 			until gets.chomp.downcase == "stay"
 				@player.deal(@deck.remove_top_card)
 
@@ -75,7 +91,7 @@ class Blackjack
 					x += 1
 				elsif
 					# Strip everything but the numbers from the string
-					hand_score += hand[x].gsub(/[^0-9]/, '').to_i
+					hand_score += hand[x].value.to_i
 					x += 1
 				end
 			end
@@ -140,18 +156,19 @@ class Blackjack
 		player_has_blackjack = is_blackjack(@player.hand)
 
 		#Dealer's turn
+		dealers_score = evaluate_hand_score(@dealer.hand)
+		dealer_has_blackjack = is_blackjack(@dealer.hand)
 		# Until the value of dealers_hand > 15, they hit
-		until evaluate_hand_score(@dealer.hand) > 15
+		until dealers_score > 15
 			was_dealt = @dealer.deal(@deck.remove_top_card)
 			puts "The dealer adds a #{was_dealt} to their hand."
+			dealers_score = evaluate_hand_score(@dealer.hand)
 		end
 		# The dealer busts if over 21
 		if dealers_score > 21
 			puts "The dealer busts with #{dealers_score}."
 			end_round("win")
 		end
-		dealers_score = evaluate_hand_score(@dealer.hand)
-		dealer_has_blackjack = is_blackjack(@dealer.hand)
 
 		# Final scoring
 		# First, does anyone have a Blackjack?
