@@ -14,4 +14,28 @@ describe BlackjackValue do
     hand_value = BlackjackValue.new(hand).value
     hand_value.should == 3
   end
+
+  it "calcuates the value of a hand that busts." do
+    hand << Card.new("Clubs", "Queen")
+    hand << Card.new("Hearts", "Seven")
+    hand << Card.new("Clubs", "Eight")
+    hand_value = BlackjackValue.new(hand).value
+    hand_value.should == 25
+  end
+
+  it "tests soft Aces (11)." do
+    hand << Card.new("Hearts", "Ten")
+    hand << Card.new("Clubs", "Ace")
+    hand_value = BlackjackValue.new(hand).value
+    hand_value.should == 21
+  end
+
+  it "tests hard Aces (1)." do
+    pending "Not yet implemented."
+    hand << Card.new("Hearts", "Ten")
+    hand << Card.new("Hearts", "Eight")
+    hand << Card.new("Clubs", "Ace")
+    hand_value = BlackjackValue.new(hand).value
+    hand_value.should == 19
+  end
 end
