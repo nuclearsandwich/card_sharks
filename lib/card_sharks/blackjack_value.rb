@@ -9,6 +9,12 @@ class BlackjackValue
     "Queen" => 10, "King" => 10, "Ace" => 11}
   end
 
+  # look into:
+  # Enumerable#any?
+  # or...
+  # Enumerable#count
+  # for solving for Aces
+
   def value
     @hand.reduce(0) do |sum_of_values, card|
       sum_of_values + values[card.rank]
