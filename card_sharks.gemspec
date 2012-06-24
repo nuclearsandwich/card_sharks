@@ -14,4 +14,6 @@ Gem::Specification.new do |gem|
   gem.name          = "card_sharks"
   gem.require_paths = ["lib"]
   gem.version       = CardSharks::VERSION
+
+  gem.add_development_dependency("rspec", "2.10")
 end
