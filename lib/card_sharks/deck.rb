@@ -9,9 +9,8 @@ class Deck
     SIZE.times do |i|
       rank = Card.ranks[i % 13]
       suit = Card.suits[i % 4]
-      value = Card.values[i % 13]
 
-      @deck << Card.new(suit, rank, value)
+      @deck << Card.new(suit, rank)
     end
   end
 
