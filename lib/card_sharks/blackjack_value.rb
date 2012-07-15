@@ -18,6 +18,9 @@ class BlackjackValue
   def value
     @hand.reduce(0) do |sum_of_values, card|
       sum_of_values + values[card.rank]
+    # if sum_of_values > 21 && @hand.any? { |card| card.include?("Ace") }
+    #   sum_of_values -= 10
+    # end
     end
   end
 end

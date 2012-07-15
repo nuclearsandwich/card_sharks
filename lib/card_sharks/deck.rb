@@ -36,3 +36,6 @@ class Deck
     @deck.delete_at(0)
   end
 end
+
+some_deck = Deck.new
+puts some_deck

@@ -31,7 +31,7 @@ describe BlackjackValue do
   end
 
   it "tests hard Aces (1)." do
-    pending "Not yet implemented."
+    #pending "Not yet implemented."
     hand << Card.new("Hearts", "Ten")
     hand << Card.new("Hearts", "Eight")
     hand << Card.new("Clubs", "Ace")
