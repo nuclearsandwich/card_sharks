@@ -27,6 +27,20 @@ require "./Dealer"
 	# Hit or stay?
 		# ^ latest problem, credits are not being deducted
 
+	# #<Deck:0x8aad90>
+		# ^ Find out where that is coming from
+	# Would you like to play a round of blackjack?
+	# yes
+	# How many of your 150 credits would you like to wager?
+	# 150
+	# You have been dealt: Eight of Spades, Ace of Spades.
+	# The dealer has been dealt two cards, and is showing Nine of Clubs.
+	# blackjack.rb:96:in `evaluate_hand_score': undefined method `value' for Eight of Spades:Card (NoMethodError)
+	# from blackjack.rb:153:in `round_of_blackjack'
+	# from blackjack.rb:212:in `play_a_game'
+	# from blackjack.rb:218:in `<main>'
+		# ^ Another problem
+
 class Blackjack
 	def initialize
 		@deck = Deck.new
@@ -69,36 +83,35 @@ class Blackjack
 			end
 		end
 
-		def evaluate_hand_score(hand)
-			# If hand contains an Ace, remove it from the array, and .push it to the last place
-			# This way, Aces get evaluated last (11 or 1)
-			y = 0        # indexing for the Ace-checking
-			while y < hand.length
-				if hand[y].include?("Ace")
-					hand.push(hand.delete_at(y))
-					y += 1
-				else
-					y += 1
-				end
-			end
+	  def evaluate_hand_score(hand)
+	    hand_score = 0
+	    x = 0       # indexing for the hand scoring, below
+	    while x < hand.length
+	      if hand[x].include?("Jack") || hand[x].include?("Queen") || hand[x].include?("King")
+	        hand_score += 10
+	        x += 1
+	      elsif hand[x].include?("Ace")
+	        hand_score += 11
+	        x += 1  
+	      elsif
+	        # Strip everything but the numbers from the string
+	        hand_score += hand[x] # needs some work, here
+	        x += 1
+	      end
+	    end
 
-			hand_score = 0
-			x = 0       # indexing for the hand scoring, below
-			while x < hand.length
-				if hand[x].include?("Ace")
-					if (hand_score + 11) > 21
-						hand_score += 1
-					else
-						hand_score += 11
-					end
-					x += 1
-				else
-					hand_score += hand[x].value.to_i
-					x += 1
-				end
-			end
-			hand_score
-		end
+	    # Count the Aces
+	    number_of_aces = hand.count { |card| card.include?("Ace") }
+
+	    if hand_score > 21 && number_of_aces > 0
+	      until hand_score < 21 || number_of_aces == 0
+	        hand_score -= 10 unless number_of_aces == 0
+	        number_of_aces -= 1
+	      end
+	    end
+
+	    hand_score
+	  end
 
 		def is_blackjack(hand)
 			x = 0     # Hand indexing

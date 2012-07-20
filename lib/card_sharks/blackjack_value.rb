@@ -16,11 +16,18 @@ class BlackjackValue
   # for solving for Aces
 
   def value
-    @hand.reduce(0) do |sum_of_values, card|
+    hand_value = @hand.reduce(0) do |sum_of_values, card|
       sum_of_values + values[card.rank]
-    # if sum_of_values > 21 && @hand.any? { |card| card.include?("Ace") }
-    #   sum_of_values -= 10
-    # end
     end
+
+    ace_count = @hand.count { |card| card.include?("Ace") }
+    if hand_value > 21 && ace_count > 0
+      until hand_value <= 21 || ace_count == 0
+        hand_value -= 10 unless ace_count == 0
+        ace_count -= 1
+      end
+    end
+    
+    hand_value
   end
 end
