@@ -66,7 +66,7 @@ describe BlackjackValue do
     hand_value.should == 12
   end
 
-  # test with two aces
+  # tests with two aces
   it "tests two Aces - only reduces one, and == 21." do
     hand << Card.new("Hearts", "Ace")
     hand << Card.new("Spades", "Six")
@@ -74,5 +74,15 @@ describe BlackjackValue do
     hand << Card.new("Clubs", "Ace")
     hand_value = BlackjackValue.new(hand).value
     hand_value.should == 21
+  end
+
+  # tests with two aces
+  it "tests two aces - reduces both, != 21" do
+    hand << Card.new("Hearts", "Ten")
+    hand << Card.new("Hearts", "Eight")
+    hand << Card.new("Spades", "Ace")
+    hand << Card.new("Clubs", "Ace")
+    hand_value = BlackjackValue.new(hand).value
+    hand_value.should == 20
   end
 end
