@@ -47,4 +47,14 @@ describe BlackjackValue do
     hand_value = BlackjackValue.new(hand).value
     hand_value.should == 21
   end
+  
+  # test with a single ace - but still a bust
+  it "tests hard Aces (1) - but still busts." do
+    hand << Card.new("Hearts", "Ten")
+    hand << Card.new("Spades", "Queen")
+    hand << Card.new("Spades", "Two")
+    hand << Card.new("Diamonds", "Ace")
+    hand_value = BlackjackValue.new(hand).value
+    hand_value.should == 23
+  end
 end
