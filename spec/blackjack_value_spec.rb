@@ -30,12 +30,21 @@ describe BlackjackValue do
     hand_value.should == 21
   end
 
+  # tests with a single ace
   it "tests hard Aces (1)." do
-    #pending "Not yet implemented."
     hand << Card.new("Hearts", "Ten")
     hand << Card.new("Hearts", "Eight")
     hand << Card.new("Clubs", "Ace")
     hand_value = BlackjackValue.new(hand).value
     hand_value.should == 19
+  end
+
+  # tests with a single ace - resulting in a 21  
+  it "tests hard Aces (1) - results in a 21." do
+    hand << Card.new("Hearts", "Ten")
+    hand << Card.new("Spades", "Queen")
+    hand << Card.new("Diamonds", "Ace")
+    hand_value = BlackjackValue.new(hand).value
+    hand_value.should == 21
   end
 end
