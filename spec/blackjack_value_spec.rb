@@ -31,7 +31,7 @@ describe BlackjackValue do
   end
 
   # tests with a single ace
-  it "tests hard Aces (1) - does not bust, != 21." do
+  it "tests hard Aces (1) - does not bust, < 21." do
     hand << Card.new("Hearts", "Ten")
     hand << Card.new("Hearts", "Eight")
     hand << Card.new("Clubs", "Ace")
@@ -77,7 +77,7 @@ describe BlackjackValue do
   end
 
   # tests with two aces
-  it "tests two Aces - reduces both, != 21." do
+  it "tests two Aces - reduces both, < 21." do
     hand << Card.new("Hearts", "Ten")
     hand << Card.new("Hearts", "Eight")
     hand << Card.new("Spades", "Ace")
@@ -116,7 +116,7 @@ describe BlackjackValue do
   end
 
   # tests with three aces
-  it "tests three Aces - reduces 2, != 21." do
+  it "tests three Aces - reduces 2, < 21." do
     hand << Card.new("Hearts", "Ace")
     hand << Card.new("Spades", "Ace")
     hand << Card.new("Clubs", "Ace")
@@ -134,4 +134,20 @@ describe BlackjackValue do
     hand_value = BlackjackValue.new(hand).value
     hand_value.should == 21
   end
+
+  # tests with three aces
+  it "tests three Aces - reduces all 3, result < 21." do
+    hand << Card.new("Hearts", "Ace")
+    hand << Card.new("Spades", "Ace")
+    hand << Card.new("Clubs", "Ace")
+    hand << Card.new("Diamonds", "Ten")
+    hand_value = BlackjackValue.new(hand).value
+    hand_value.should == 13
+  end
+
+  # to do:
+  # test 3 aces, all 3 get reduced, result == 21
+  # test 3 aces, all 3 get reduced, bust
+
+  # then move on to 4's
 end
