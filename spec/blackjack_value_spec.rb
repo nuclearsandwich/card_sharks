@@ -1,5 +1,6 @@
 require "card_sharks/card"
 require "card_sharks/blackjack_value"
+require "card_sharks/deck"
 
 describe BlackjackValue do
   let(:hand) { [] }
@@ -218,5 +219,19 @@ describe BlackjackValue do
     hand << Card.new("Spades", "Jack")
     hand_value = BlackjackValue.new(hand).value
     hand_value.should == 22
+  end
+
+  # final test - for shits and giggles, mostly - get the value of the entire deck
+  it "values the entire deck, including reducing all 4 Aces." do
+    deck = Deck.new   # <- to get this line to work, comment out the require line in deck.rb
+    
+    x = 0
+    52.times do
+      hand << deck.deck(x)
+      x += 1
+    end
+
+    hand_value = BlackjackValue.new(hand).value
+    hand_value.should == ((1 * 4) + (2 * 4) + (3 * 4) + (4 * 4) + (5 * 4) + (6 * 4) + (7 * 4) + (8 * 4) + (9 * 4) + (10 * 16))
   end
 end
