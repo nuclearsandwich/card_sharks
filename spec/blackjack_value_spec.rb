@@ -232,6 +232,6 @@ describe BlackjackValue do
     end
 
     hand_value = BlackjackValue.new(hand).value
-    hand_value.should == ((1 * 4) + (2 * 4) + (3 * 4) + (4 * 4) + (5 * 4) + (6 * 4) + (7 * 4) + (8 * 4) + (9 * 4) + (10 * 16))
+    hand_value.should == (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + (10 * 4)) * 4
   end
 end
