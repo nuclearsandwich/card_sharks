@@ -10,43 +10,34 @@ require "./blackjack_value.rb"
 	# yes
 	# How many of your 150 credits would you like to wager?
 	# 25
-	# You have been dealt: Four of Hearts, Seven of Hearts.
-	# The dealer has been dealt two cards, and is showing Two of Diamonds.
+	# You have been dealt: King of Hearts, Five of Clubs.
+	# The dealer has been dealt two cards, and is showing Seven of Clubs.
 	# Hit or stay?
 	# hit
-	# Your hand contains Four of Hearts, Seven of Hearts, Jack of Clubs.
+	# Your hand contains King of Hearts, Five of Clubs, Six of Hearts.
 	# Your hand's score is 21.
-	# The dealer adds a Queen of Spades to their hand.
-	# The dealer busts with 22.
-	# This round, the dealer's hand contained: Queen of Hearts, Two of Diamonds, Queen of Spades.
+	# Your 21 whomps the dealer's meager 17.
+	# This round, the dealer's hand contained: King of Spades, Seven of Clubs.
 	# Would you like to play a round of blackjack?
 	# yes
-	# How many of your 150 credits would you like to wager?
-	# 25
-	# You have been dealt: Three of Spades, Ace of Diamonds.
-	# The dealer has been dealt two cards, and is showing Eight of Clubs.
+	# How many of your 200 credits would you like to wager?
+	# 10 
+	# You have been dealt: King of Hearts, Five of Clubs, Six of Hearts, Ace of Hearts, Nine of Diamonds.
+	# The dealer has been dealt two cards, and is showing Seven of Clubs.
 	# Hit or stay?
-		# ^ latest problem, credits are not being deducted
+		# Well, well, well...fix one thing, break another. xD
+		# Credits are now being deducted, but wow - look at that initial deal.
+		
+		# In my attempt to alter play_a_game, I thought the changes would keep track of the credits, but
+		# didn't take into consideration the persistence of the player's hand.
 
-	# Would you like to play a round of blackjack?
-	# yes
-	# How many of your 150 credits would you like to wager?
-	# 25
-	# You have been dealt: Jack of Hearts, Two of Clubs.
-	# The dealer has been dealt two cards, and is showing Four of Clubs.
-	# Hit or stay?
-	# hit
-	# Your hand contains Jack of Hearts, Two of Clubs, Ace of Hearts.
-	# Hit or stay?
-	# hit
-	# Your hand contains Jack of Hearts, Two of Clubs, Ace of Hearts, Eight of Spades.
-	# Your hand's score is 21.
-	# The dealer adds a Eight of Hearts to their hand.
-	# The dealer adds a King of Spades to their hand.
-	# The dealer busts with 24.
-	# This round, the dealer's hand contained: Two of Spades, Four of Clubs, Eight of Hearts, King of Spades.
-	# Would you like to play a round of blackjack?
-		# Successfully incorporate blackjack_value.rb into game
+		# Fix I am considering:
+			# Give round_of_blackjack a parameter - as was done to play_a_game - and if x is a certain value,
+			# wipe the player's hand, the dealer's hand, and create a brand new deck.
+
+	# Also, tell player their bid & credits after a round
+
+	# Condense lines 146 & 147 (dealer's until-loop)
 
 class Blackjack
 	def initialize
@@ -131,15 +122,15 @@ class Blackjack
 			if conditional == "win"
 				# Double the player's bid and add that number to their credits pool.
 				@player.update_credits(@player_bid * 2)
-				play_a_game
+				play_a_game(0)
 			elsif conditional == "lose"
 				# Deduct the player's bid from their credit pool.
 				@player.update_credits(@player_bid * -1)
-				play_a_game
+				play_a_game(0)
 			else
 				# On a push (tie), do nothing to the player's credit pool.
 				puts "This round was a push."
-				play_a_game
+				play_a_game(0)
 			end
 		end
 
@@ -198,15 +189,18 @@ class Blackjack
 		end
 	end
 end
-# ^ This end ends the Blackjack class
 
-def play_a_game
+def play_a_game(x)
 	puts "Would you like to play a round of blackjack?"
 	if gets.chomp.downcase == "yes"
-		Blackjack.new.round_of_blackjack
+		if x == 1
+			Blackjack.new.round_of_blackjack
+		else
+			round_of_blackjack
+		end
 	else 
 		puts "Alrighty then, another time!"
 	end
 end
 
-play_a_game
+play_a_game(1)
