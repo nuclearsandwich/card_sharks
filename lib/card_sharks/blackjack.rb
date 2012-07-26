@@ -41,8 +41,7 @@ require "./blackjack_value.rb"
 
 class Blackjack
 	def initialize
-		@deck = Deck.new
-		@deck.shuffle!
+		# Ripped the deck out of here, and put it onto lines 59-60
 
 		@player = Player.new
 		@dealer = Dealer.new
@@ -51,6 +50,14 @@ class Blackjack
 	def round_of_blackjack
 		@player_bid = @player.make_bid
 		@player_credits = @player.credits
+
+		# Reset the hands of the player and dealer, ensuring an empty array each round
+		@player.wipe_hand
+		@dealer.wipe_hand
+
+		# New, shuffled deck each round
+		@deck = Deck.new
+		@deck.shuffle!
 
 		# Deal two cards to player ("physically" removing them from @deck)
 		2.times { @player.deal(@deck.remove_top_card) }
