@@ -14,4 +14,8 @@ class Dealer
   def tell_hand
     @hand.join(", ")
   end
+
+  def wipe_hand
+    @hand = []
+  end
 end

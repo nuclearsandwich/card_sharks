@@ -37,4 +37,8 @@ class Player
   def update_credits(amount)
     @credits += amount
   end
+
+  def wipe_hand
+    @hand = []
+  end
 end
