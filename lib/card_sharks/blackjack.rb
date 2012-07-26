@@ -6,43 +6,61 @@ require "./blackjack_value.rb"
 # Blackjack.rb version 3.1
 
 # Notes on progress / current problems:
-	# Would you like to play a round of blackjack?
-	# yes
-	# How many of your 150 credits would you like to wager?
-	# 25
-	# You have been dealt: King of Hearts, Five of Clubs.
-	# The dealer has been dealt two cards, and is showing Seven of Clubs.
-	# Hit or stay?
-	# hit
-	# Your hand contains King of Hearts, Five of Clubs, Six of Hearts.
-	# Your hand's score is 21.
-	# Your 21 whomps the dealer's meager 17.
-	# This round, the dealer's hand contained: King of Spades, Seven of Clubs.
-	# Would you like to play a round of blackjack?
-	# yes
-	# How many of your 200 credits would you like to wager?
-	# 10 
-	# You have been dealt: King of Hearts, Five of Clubs, Six of Hearts, Ace of Hearts, Nine of Diamonds.
-	# The dealer has been dealt two cards, and is showing Seven of Clubs.
-	# Hit or stay?
-		# Well, well, well...fix one thing, break another. xD
-		# Credits are now being deducted, but wow - look at that initial deal.
-		
-		# In my attempt to alter play_a_game, I thought the changes would keep track of the credits, but
-		# didn't take into consideration the persistence of the player's hand.
-
-		# Fix I am considering:
-			# Give round_of_blackjack a parameter - as was done to play_a_game - and if x is a certain value,
-			# wipe the player's hand, the dealer's hand, and create a brand new deck.
-
-	# Also, tell player their bid & credits after a round
-
-	# Condense lines 146 & 147 (dealer's until-loop)
+	# Here's an interesting one:
+		# Would you like to play a round of blackjack?
+		# yes
+		# How many of your 150 credits would you like to wager?
+		# 1
+		# You have been dealt: Seven of Spades, Four of Clubs.
+		# The dealer has been dealt two cards, and is showing Two of Diamonds.
+		# Hit or stay?
+		# hit
+		# Your hand contains Seven of Spades, Four of Clubs, Eight of Diamonds.
+		# Hit or stay?
+		# hit
+		# Your hand contains Seven of Spades, Four of Clubs, Eight of Diamonds, Six of Hearts.
+		# You busted with 25.
+		# This round, the dealer's hand contained: King of Clubs, Two of Diamonds.
+		# Would you like to play a round of blackjack?
+		# yes
+		# How many of your 149 credits would you like to wager?
+		# 1
+		# You have been dealt: Queen of Hearts, Three of Hearts.
+		# The dealer has been dealt two cards, and is showing Four of Clubs.
+		# Hit or stay?
+		# hit
+		# Your hand contains Queen of Hearts, Three of Hearts, Nine of Diamonds.
+		# You busted with 22.
+		# This round, the dealer's hand contained: Jack of Spades, Four of Clubs.
+		# Would you like to play a round of blackjack?
+		# hit
+		# Alrighty then, another time!
+		# Hit or stay?
+		# hit
+		# Your hand contains Queen of Hearts, Three of Hearts, Nine of Diamonds, Ten of Clubs.
+		# You busted with 32.
+		# This round, the dealer's hand contained: Jack of Spades, Four of Clubs.
+		# Would you like to play a round of blackjack?
+		# hit
+		# Alrighty then, another time!
+		# Hit or stay?
+		# hit
+		# Your hand contains Queen of Hearts, Three of Hearts, Nine of Diamonds, Ten of Clubs, Seven of Hearts.
+		# You busted with 39.
+		# This round, the dealer's hand contained: Jack of Spades, Four of Clubs.
+		# Would you like to play a round of blackjack?
+		# hit
+		# Alrighty then, another time!
+		# Hit or stay?
+		# hit
+		# Your hand contains Queen of Hearts, Three of Hearts, Nine of Diamonds, Ten of Clubs, Seven of Hearts, Four of Spades.
+		# You busted with 43.
+		# This round, the dealer's hand contained: Jack of Spades, Four of Clubs.
+		# Would you like to play a round of blackjack?
+		# yes
 
 class Blackjack
 	def initialize
-		# Ripped the deck out of here, and put it onto lines 59-60
-
 		@player = Player.new
 		@dealer = Dealer.new
 	end
@@ -128,15 +146,17 @@ class Blackjack
 			puts "This round, the dealer's hand contained: #{@dealer.tell_hand}."
 			if conditional == "win"
 				# Double the player's bid and add that number to their credits pool.
+				puts "Winning doubled your bid of #{@player_bid}. You had #{@player.credits} credits, and now have #{@player.credits + (@player_bid * 2)} credits."
 				@player.update_credits(@player_bid * 2)
 				play_a_game(0)
 			elsif conditional == "lose"
 				# Deduct the player's bid from their credit pool.
+				puts "You lost your bid of #{@player_bid}. You had #{@player.credits} credits, and are down to #{@player.credits - (@player_bid)} credits."
 				@player.update_credits(@player_bid * -1)
 				play_a_game(0)
 			else
 				# On a push (tie), do nothing to the player's credit pool.
-				puts "This round was a push."
+				puts "This round was a push. Your bid has been returned - you have #{@player.credits} credits."
 				play_a_game(0)
 			end
 		end
