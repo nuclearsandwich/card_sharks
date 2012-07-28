@@ -59,6 +59,10 @@ require "./blackjack_value.rb"
 		# Would you like to play a round of blackjack?
 		# yes
 
+		# Future update:
+			# On wins via blackjack, tell the dealer's hand-score (for the sake of math-checking)
+			# On losses via blackjack, tell the player's hand-score (for the sake of math-checking)
+
 class Blackjack
 	def initialize
 		@player = Player.new
@@ -110,36 +114,8 @@ class Blackjack
 	  	hand_score = (BlackjackValue.new(hand)).value
 	  end
 
-		def is_blackjack(hand)
-			x = 0     # Hand indexing
-			has_jack = false
-			has_ace = false
-
-			while x < hand.length
-				if hand[x].include?("Ace") == true
-					has_ace = true
-					x = hand.length
-				else
-					x += 1
-				end
-			end
-
-			x = 0     # Reset x
-
-			while x < hand.length
-				if hand[x].include?("Jack") == true
-					has_jack = true
-					x = hand.length
-				else
-					x += 1
-				end
-			end
-
-			if has_jack == true && has_ace == true && hand.length == 2
-				true
-			else
-				false
-			end
+		def blackjack_check(hand)
+			is_a_blackjack = (BlackjackValue.new(hand)).is_blackjack
 		end
 
 		def end_round(conditional)
@@ -172,11 +148,11 @@ class Blackjack
 		# Save score as an integer in players_score
 		players_score = evaluate_hand_score(@player.hand)
 		# Determine if the player's hand is a blackjack
-		player_has_blackjack = is_blackjack(@player.hand)
+		player_has_blackjack = blackjack_check(@player.hand)
 
 		#Dealer's turn
 		dealers_score = evaluate_hand_score(@dealer.hand)
-		dealer_has_blackjack = is_blackjack(@dealer.hand)
+		dealer_has_blackjack = blackjack_check(@dealer.hand)
 		# Until the value of dealers_hand > 15, they hit
 		until dealers_score > 15
 			was_dealt = @deck.deck(0)

@@ -30,4 +30,19 @@ class BlackjackValue
     
     hand_value
   end
+
+  def is_blackjack
+    if @hand.length > 2
+      false
+    else
+      has_ace = true if (@hand[0].include?("Ace") == true || @hand[1].include?("Ace") == true)
+      has_jack = true if (@hand[0].include?("Jack") == true || @hand[1].include?("Jack") == true)
+
+      if has_ace && has_jack
+        true
+      else
+        false
+      end
+    end
+  end
 end
