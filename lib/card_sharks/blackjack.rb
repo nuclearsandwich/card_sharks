@@ -61,7 +61,6 @@ require "./blackjack_value.rb"
 
 		# Future update:
 			# On wins via blackjack, tell the dealer's hand-score (for the sake of math-checking)
-			# On losses via blackjack, tell the player's hand-score (for the sake of math-checking)
 
 class Blackjack
 	def initialize
@@ -173,7 +172,7 @@ class Blackjack
 				puts "Your Blackjack trumps the dealer."
 				end_round("win")
 			elsif player_has_blackjack == false && dealer_has_blackjack == true
-				puts "The dealer's Blackjack trumps your hand."
+				puts "The dealer's Blackjack trumps your #{players_score}."
 				end_round("lose")
 			elsif player_has_blackjack == true && dealer_has_blackjack == true
 				puts "Both you and the dealer have a Blackjack."
