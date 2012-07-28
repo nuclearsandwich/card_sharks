@@ -3,7 +3,7 @@ require "./Player"
 require "./Dealer"
 require "./blackjack_value.rb"
 
-# Blackjack.rb version 3.1
+# Blackjack.rb version 3.2
 
 # Notes on progress / current problems:
 	# Here's an interesting one:
@@ -58,9 +58,6 @@ require "./blackjack_value.rb"
 		# This round, the dealer's hand contained: Jack of Spades, Four of Clubs.
 		# Would you like to play a round of blackjack?
 		# yes
-
-		# Future update:
-			# On wins via blackjack, tell the dealer's hand-score (for the sake of math-checking)
 
 class Blackjack
 	def initialize
@@ -169,7 +166,7 @@ class Blackjack
 		# First, does anyone have a Blackjack?
 		if player_has_blackjack == true || dealer_has_blackjack == true
 			if player_has_blackjack == true && dealer_has_blackjack == false
-				puts "Your Blackjack trumps the dealer."
+				puts "Your Blackjack trumps the dealer's #{dealers_score}."
 				end_round("win")
 			elsif player_has_blackjack == false && dealer_has_blackjack == true
 				puts "The dealer's Blackjack trumps your #{players_score}."
