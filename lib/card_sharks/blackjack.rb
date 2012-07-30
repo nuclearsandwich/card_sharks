@@ -1,9 +1,9 @@
+# blackjack.rb version 3.2
+
 require "./Deck"
 require "./Player"
 require "./Dealer"
 require "./blackjack_value.rb"
-
-# Blackjack.rb version 3.2
 
 # Notes on progress / current problems:
 	# Here's an interesting one:
