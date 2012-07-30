@@ -2,6 +2,7 @@
 
 # initial setup for now; [important] stuff to remember for later:
 	# players take turns asking for cards from one another
+	# if a player has what the other asks for, the latter must turn over ALL cards of that RANK to the asking player
 	# if a player gets what they ask for, they get another turn
 	# if a player doesn't get what they ask for from another player, but get what they asked for from "going fishing,"
 		# they get another turn - also, they must announce that they got what they asked for
@@ -31,6 +32,23 @@ class GoFish
 	7.times { @opponent.deal(@deck.remove_top_card) }
 
 	def do_you_have_any(requested_card)
-
+		@opponent.hand.each do |card|
+			if card.include?(requested_card)
+				take_me = card
+				@player.deal(@opponent.hand.delete(take_me))
+			end
+		end
 	end
+
+	# determine who goes first
+	def go_first
+		x = rand(2)
+
+		if x == 1
+			do_you_have_any(gets.chomp)
+		else
+			# opponent goes first
+		end
+	end
+
 end
