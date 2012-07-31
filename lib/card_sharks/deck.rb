@@ -35,4 +35,8 @@ class Deck
   def remove_top_card
     @deck.delete_at(0)
   end
+
+  def length
+    @deck.length
+  end
 end
