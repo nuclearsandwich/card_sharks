@@ -11,6 +11,27 @@
 		# into a permanent score-pool for that player
 	# player's score based on how many sets of 4 they have, via RANK (King King King King == a set)
 
+	# to do/fix:
+		# Player hand: Ace of Spades, Three of Hearts, King of Diamonds, Eight of Spades, Four of Clubs, King of Spades, Queen of Clubs.
+		# Opponent hand: Six of Clubs, Nine of Spades, Two of Hearts, King of Clubs, Six of Diamonds, Queen of Diamonds, Nine of Diamonds.
+		# You get the first turn.
+		# Queen
+		# The dealer does not have any Queens. You go fish, instead.
+		# You fish a Seven of Hearts from the pool.
+			# Dafuq? ^
+			# Another test. v
+		# Player hand: Two of Hearts, Eight of Hearts, Four of Diamonds, Jack of Diamonds, Ace of Clubs, Five of Spades, Five of Diamonds.
+		# Dealer hand: Ace of Hearts, Queen of Hearts, Three of Hearts, Nine of Clubs, Queen of Spades, Four of Spades, Jack of Spades.
+		# You get the first turn.
+		# Ace
+		# The dealer had a Ace; you add the Ace of Hearts to your hand.
+		# Four
+		# The dealer does not have any Fours. You go fish, instead.
+		# You fish a King of Hearts from the pool.
+			# Sometimes it finds it, sometimes not?
+
+		# go_fish.rb:54:in `block in dealers_turn': undefined method `ranks' for Queen of Hearts:Card (NoMethodError)
+
 require "./Deck"
 require "./Player"
 require "./Dealer"
@@ -34,13 +55,14 @@ class GoFish
 
 		# Ultimately, these two lines will be removed. Keep for now, while testing
 		puts "Player hand: #{@player.tell_hand}."
-		puts "Opponent hand: #{@dealer.tell_hand}."
+		puts "Dealer hand: #{@dealer.tell_hand}."
 
 		def dealers_turn
 			# dealer gets a pool of ranks to chose from:
 			cards_to_chose_from = []
 			# populate the choice-pool:
 			@dealer.hand.each do |card|
+				# If .ranks is not being recognized, try stripping all but the first word from the card 
 				cards_to_chose_from << card.ranks
 			end
 
@@ -53,10 +75,11 @@ class GoFish
 
 		def go_fish(card)
 			card_to_deal = @deck.remove_top_card
+			puts "You fish a #{card_to_deal} from the pool."
 			@player.deal(card_to_deal)
 
 			# The player gets another turn if they got what they asked for:
-			if card_to_deal.include?("card")
+			if card_to_deal.include?(card)
 				puts "You got what you asked for! You get another turn."
 				ask_for
 			else
@@ -67,11 +90,11 @@ class GoFish
 		def do_you_have_any(requested_card)
 			@dealer.hand.each do |card|
 				if card.include?(requested_card)
-					take_me = card
-					@player.deal(@dealer.hand.delete(take_me))
-					puts "The dealer had a #{requested_card}; you add the #{take_me} to your hand."
+					@player.deal(@dealer.hand.delete(card))
+					puts "The dealer had a #{requested_card}; you add the #{card} to your hand."
 					ask_for
 				else
+					puts "The dealer does not have any #{requested_card}s. You go fish, instead."
 					# The player is told to go fish, if any cards remain in the deck:
 					go_fish(requested_card) if @deck.remove_top_card != nil
 					# Else, go to dealer's turn:
