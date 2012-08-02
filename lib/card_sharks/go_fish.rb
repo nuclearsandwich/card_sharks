@@ -11,48 +11,15 @@
 		# into a permanent score-pool for that player
 	# player's score based on how many sets of 4 they have, via RANK (King King King King == a set)
 
-	# to do/fix:
-		# Player hand: Ace of Spades, Three of Hearts, King of Diamonds, Eight of Spades, Four of Clubs, King of Spades, Queen of Clubs.
-		# Opponent hand: Six of Clubs, Nine of Spades, Two of Hearts, King of Clubs, Six of Diamonds, Queen of Diamonds, Nine of Diamonds.
-		# You get the first turn.
-		# Queen
-		# The dealer does not have any Queens. You go fish, instead.
-		# You fish a Seven of Hearts from the pool.
-			# Dafuq? ^
-			# Another test. v
-		# Player hand: Two of Hearts, Eight of Hearts, Four of Diamonds, Jack of Diamonds, Ace of Clubs, Five of Spades, Five of Diamonds.
-		# Dealer hand: Ace of Hearts, Queen of Hearts, Three of Hearts, Nine of Clubs, Queen of Spades, Four of Spades, Jack of Spades.
-		# You get the first turn.
-		# Ace
-		# The dealer had a Ace; you add the Ace of Hearts to your hand.
-		# Four
-		# The dealer does not have any Fours. You go fish, instead.
-		# You fish a King of Hearts from the pool.
-			# Sometimes it finds it, sometimes not?
+	# list of things working properly:
+		# player gets another turn if they got what they ask for, or on a do_you_have_any or a go_fish
 
-		# go_fish.rb:54:in `block in dealers_turn': undefined method `ranks' for Queen of Hearts:Card (NoMethodError)
-		 # Possible fix: use gsub to strip everything but the first word (rank) from the card.
+	# list of things half-working:
+		# they player cannot ask for something they don't have - but the program is not incrementing through hands properly,
+			# so it may not find something that they DO have.
+		#  
 
-		# Would you like to play a game of Go Fish?
-		# yes
-		# Player hand: Eight of Hearts, Jack of Spades, Queen of Spades, Eight of Clubs, Ten of Hearts, Two of Diamonds, Two of Spades.
-		# Dealer hand: Three of Spades, Four of Spades, Four of Clubs, Five of Hearts, King of Spades, Seven of Diamonds, Jack of Hearts.
-		# You get the first turn.
-		# What rank do you want to ask your opponent for?
-		# Jack
-		# The dealer does not have any Jacks. You go fish, instead.
-		# You fish a Jack of Diamonds from the pool.
-		# You got what you asked for! You get another turn.
-		# What rank do you want to ask your opponent for?
-		# Three
-		# The dealer had a Three; you add the Three of Spades to your hand.
-		# What rank do you want to ask your opponent for?
-			# Some good, some bad, here:
-				# Bad: The player can ask for something they don't posess in their hand (Three).
-				# Bad: The program is not recognizing a Jack in the dealer's hand...
-				# Good: ...though, oddly enough, recognized the three.
-				# Good: Hey, the player got a Jack from going fishing! The program gives the player another turn, as appropriate.
-
+	# list of thing to do/fix:
 		# While testing the .gsub in dealers_turn:
 			# Player hand: Eight of Diamonds, Ace of Diamonds, Three of Clubs, Nine of Clubs, Five of Spades, Queen of Spades, Ten of Clubs.
 			# Dealer hand: Ace of Clubs, Jack of Diamonds, King of Diamonds, Ace of Spades, Queen of Hearts, Nine of Diamonds, Six of Diamonds.
@@ -62,7 +29,7 @@
 			# The dealer had a Ace; you add the Ace of Clubs to your hand.
 			# What rank do you want to ask your opponent for?
 				# The dealer had two Aces - Clubs and Spades - but the player was not given both, only one.
-				# [Par of the] problem is line 141 - the program calls ask_for befoing finishing going through the entire hand
+				# [Part of the] problem is, the program calls ask_for befoing finishing going through the entire hand
 				# This may also have to do with why the program isn't finding a rank sometimes:
 			# Ace
 			# The dealer does not have any Aces. You go fish, instead.
@@ -71,39 +38,6 @@
 
 		# Also, the .gsub doesn't quite work:
 			# go_fish.rb:92:in `block in dealers_turn': undefined method `gsub' for Jack of Diamonds:Card (NoMethodError)
-
-		# Player hand: Six of Hearts, Nine of Hearts, Ace of Spades, Five of Diamonds, Ten of Spades, Seven of Diamonds, Eight of Clubs.
-		# Dealer hand: Ace of Clubs, Nine of Clubs, Four of Hearts, King of Hearts, Queen of Diamonds, Six of Clubs, Five of Clubs.
-		# You get the first turn.
-		# What rank do you want to ask your opponent for?
-		# Three
-		# You cannot ask for a Three, as you do not have any.
-		# What rank do you want to ask your opponent for?
-		# Queen
-		# You cannot ask for a Queen, as you do not have any.
-		# What rank do you want to ask your opponent for?
-		# Walrus
-		# You cannot ask for a Walrus, as you do not have any.
-		# What rank do you want to ask your opponent for?
-		# Waffle
-		# You cannot ask for a Waffle, as you do not have any.
-		# What rank do you want to ask your opponent for?
-			# No Waffles for us, it seems. :(
-
-		# Player hand: Queen of Hearts, Nine of Diamonds, Eight of Spades, Six of Spades, Queen of Diamonds, Five of Hearts, Queen of Spades.
-		# Dealer hand: Two of Clubs, Eight of Clubs, Jack of Spades, Ace of Diamonds, King of Hearts, Jack of Hearts, Eight of Diamonds.
-		# You get the first turn.
-		# What rank do you want to ask your opponent for?
-		# Nine
-		# You cannot ask for a Nine, as you do not have any.
-		# What rank do you want to ask your opponent for?
-		# Queen
-		# The dealer does not have any of those. You go fish, instead.
-		# You fish a Queen of Clubs from the pool.
-		# You got what you asked for! You get another turn.
-		# What rank do you want to ask your opponent for?
-			# Half-fixed the player-asking-for-something-they-don't-have issue.
-			# Next up, finally fixing incrementing through the hand.
 
 require "./Deck"
 require "./Player"
