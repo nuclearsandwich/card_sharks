@@ -31,6 +31,27 @@
 			# Sometimes it finds it, sometimes not?
 
 		# go_fish.rb:54:in `block in dealers_turn': undefined method `ranks' for Queen of Hearts:Card (NoMethodError)
+		 # Possible fix: use gsub to strip everything but the first word (rank) from the card.
+
+		# Would you like to play a game of Go Fish?
+		# yes
+		# Player hand: Eight of Hearts, Jack of Spades, Queen of Spades, Eight of Clubs, Ten of Hearts, Two of Diamonds, Two of Spades.
+		# Dealer hand: Three of Spades, Four of Spades, Four of Clubs, Five of Hearts, King of Spades, Seven of Diamonds, Jack of Hearts.
+		# You get the first turn.
+		# What rank do you want to ask your opponent for?
+		# Jack
+		# The dealer does not have any Jacks. You go fish, instead.
+		# You fish a Jack of Diamonds from the pool.
+		# You got what you asked for! You get another turn.
+		# What rank do you want to ask your opponent for?
+		# Three
+		# The dealer had a Three; you add the Three of Spades to your hand.
+		# What rank do you want to ask your opponent for?
+			# Some good, some bad, here:
+				# Bad: The player can ask for something they don't posess in their hand (Three).
+				# Bad: The program is not recognizing a Jack in the dealer's hand...
+				# Good: ...though, oddly enough, recognized the three.
+				# Good: Hey, the player got a Jack from going fishing! The program gives the player another turn, as appropriate.
 
 require "./Deck"
 require "./Player"
@@ -104,7 +125,7 @@ class GoFish
 		end
 
 		def ask_for
-			"What rank do you want to ask your opponent for?"
+			puts "What rank do you want to ask your opponent for?"
 			requested_card = gets.chomp
 			do_you_have_any(requested_card)
 		end
