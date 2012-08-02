@@ -72,6 +72,38 @@
 		# Also, the .gsub doesn't quite work:
 			# go_fish.rb:92:in `block in dealers_turn': undefined method `gsub' for Jack of Diamonds:Card (NoMethodError)
 
+		# Player hand: Six of Hearts, Nine of Hearts, Ace of Spades, Five of Diamonds, Ten of Spades, Seven of Diamonds, Eight of Clubs.
+		# Dealer hand: Ace of Clubs, Nine of Clubs, Four of Hearts, King of Hearts, Queen of Diamonds, Six of Clubs, Five of Clubs.
+		# You get the first turn.
+		# What rank do you want to ask your opponent for?
+		# Three
+		# You cannot ask for a Three, as you do not have any.
+		# What rank do you want to ask your opponent for?
+		# Queen
+		# You cannot ask for a Queen, as you do not have any.
+		# What rank do you want to ask your opponent for?
+		# Walrus
+		# You cannot ask for a Walrus, as you do not have any.
+		# What rank do you want to ask your opponent for?
+		# Waffle
+		# You cannot ask for a Waffle, as you do not have any.
+		# What rank do you want to ask your opponent for?
+			# No Waffles for us, it seems. :(
+
+		# Player hand: Queen of Hearts, Nine of Diamonds, Eight of Spades, Six of Spades, Queen of Diamonds, Five of Hearts, Queen of Spades.
+		# Dealer hand: Two of Clubs, Eight of Clubs, Jack of Spades, Ace of Diamonds, King of Hearts, Jack of Hearts, Eight of Diamonds.
+		# You get the first turn.
+		# What rank do you want to ask your opponent for?
+		# Nine
+		# You cannot ask for a Nine, as you do not have any.
+		# What rank do you want to ask your opponent for?
+		# Queen
+		# The dealer does not have any of those. You go fish, instead.
+		# You fish a Queen of Clubs from the pool.
+		# You got what you asked for! You get another turn.
+		# What rank do you want to ask your opponent for?
+			# Half-fixed the player-asking-for-something-they-don't-have issue.
+			# Next up, finally fixing incrementing through the hand.
 
 require "./Deck"
 require "./Player"
@@ -116,6 +148,8 @@ class GoFish
 			random_card = rand(cards_to_chose_from.length)
 
 			# ask for it:
+			# Remove the following line after testing:
+			puts "The dealer can chose: #{cards_to_chose_from}."
 			puts "The dealer asks for your #{random_card.ranks}s."
 		end
 
@@ -134,17 +168,27 @@ class GoFish
 		end
 
 		def do_you_have_any(requested_card)
-			@dealer.hand.each do |card|
+			# if they player doesn't have at least one of what they are asking for, they can't ask for it:
+			@player.hand.each do |card|
 				if card.include?(requested_card)
-					@player.deal(@dealer.hand.delete(card))
-					puts "The dealer had a #{requested_card}; you add the #{card} to your hand."
-					ask_for
+					# They can ask for it:
+					@dealer.hand.each do |card|
+						if card.include?(requested_card)
+							@player.deal(@dealer.hand.delete(card))
+							puts "The dealer had a #{requested_card}; you add the #{card} to your hand."
+							ask_for
+						else
+							puts "The dealer does not have any of those. You go fish, instead."
+							# The player is told to go fish, if any cards remain in the deck:
+							go_fish(requested_card) if @deck.remove_top_card != nil
+							# Else, go to dealer's turn:
+							dealers_turn
+						end
+					end
+				# They cannot ask for it:
 				else
-					puts "The dealer does not have any #{requested_card}s. You go fish, instead."
-					# The player is told to go fish, if any cards remain in the deck:
-					go_fish(requested_card) if @deck.remove_top_card != nil
-					# Else, go to dealer's turn:
-					dealers_turn
+					puts "You cannot ask for a #{requested_card}, as you do not have any."
+					ask_for
 				end
 			end
 		end
