@@ -53,6 +53,26 @@
 				# Good: ...though, oddly enough, recognized the three.
 				# Good: Hey, the player got a Jack from going fishing! The program gives the player another turn, as appropriate.
 
+		# While testing the .gsub in dealers_turn:
+			# Player hand: Eight of Diamonds, Ace of Diamonds, Three of Clubs, Nine of Clubs, Five of Spades, Queen of Spades, Ten of Clubs.
+			# Dealer hand: Ace of Clubs, Jack of Diamonds, King of Diamonds, Ace of Spades, Queen of Hearts, Nine of Diamonds, Six of Diamonds.
+			# You get the first turn.
+			# What rank do you want to ask your opponent for?
+			# Ace
+			# The dealer had a Ace; you add the Ace of Clubs to your hand.
+			# What rank do you want to ask your opponent for?
+				# The dealer had two Aces - Clubs and Spades - but the player was not given both, only one.
+				# [Par of the] problem is line 141 - the program calls ask_for befoing finishing going through the entire hand
+				# This may also have to do with why the program isn't finding a rank sometimes:
+			# Ace
+			# The dealer does not have any Aces. You go fish, instead.
+			# You fish a Jack of Hearts from the pool.
+				# The program isn't going far enough through the hand to find the rank.
+
+		# Also, the .gsub doesn't quite work:
+			# go_fish.rb:92:in `block in dealers_turn': undefined method `gsub' for Jack of Diamonds:Card (NoMethodError)
+
+
 require "./Deck"
 require "./Player"
 require "./Dealer"
@@ -83,8 +103,13 @@ class GoFish
 			cards_to_chose_from = []
 			# populate the choice-pool:
 			@dealer.hand.each do |card|
-				# If .ranks is not being recognized, try stripping all but the first word from the card 
-				cards_to_chose_from << card.ranks
+				# .gsub(/( of Spades|| of Diamonds|| of Hearts|| of Clubs)/, "")
+					# ...is not being recognized. Trying to be too crafty by putting or's into a gsub?
+				# .gsub(/( of Clubs),( of Diamonds),( of Hearts),( of Spades)/, "")
+					# Does not work either, after a test.
+
+				# Chaining .gsubs seems to work, instead:
+				card.gsub(/( of Clubs)/, "").gsub(/( of Diamonds)/, "").gsub(/( of Hearts)/, "").gsub(/( of Spades)/, "")
 			end
 
 			# randomly determine which card the dealer will ask for:
