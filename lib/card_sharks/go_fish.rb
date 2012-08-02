@@ -15,9 +15,8 @@
 		# player gets another turn if they got what they ask for, or on a do_you_have_any or a go_fish
 
 	# list of things half-working:
-		# they player cannot ask for something they don't have - but the program is not incrementing through hands properly,
-			# so it may not find something that they DO have.
-		#  
+		# they player cannot ask for something they don't have - but the program is not incrementing through hands properly -
+			# either the player's or the dealer's - so it may not find something that they DO have.
 
 	# list of thing to do/fix:
 		# While testing the .gsub in dealers_turn:
@@ -102,28 +101,36 @@ class GoFish
 		end
 
 		def do_you_have_any(requested_card)
+			got_what_they_asked_for = false
+			can_ask_for = false
+
 			# if they player doesn't have at least one of what they are asking for, they can't ask for it:
 			@player.hand.each do |card|
 				if card.include?(requested_card)
-					# They can ask for it:
+					can_ask_for = true
+				end
+					
+				if can_ask_for == true
 					@dealer.hand.each do |card|
 						if card.include?(requested_card)
 							@player.deal(@dealer.hand.delete(card))
 							puts "The dealer had a #{requested_card}; you add the #{card} to your hand."
-							ask_for
-						else
-							puts "The dealer does not have any of those. You go fish, instead."
-							# The player is told to go fish, if any cards remain in the deck:
-							go_fish(requested_card) if @deck.remove_top_card != nil
-							# Else, go to dealer's turn:
-							dealers_turn
+							puts "Updated dealer hand: #{@dealer.tell_hand}."
+							got_what_they_asked_for = true
 						end
 					end
-				# They cannot ask for it:
 				else
 					puts "You cannot ask for a #{requested_card}, as you do not have any."
 					ask_for
 				end
+			end
+
+			if got_what_they_asked_for == true
+				puts "You got what you asked for! You get to go again."
+				ask_for
+			else
+				puts "The dealer did not have any."
+				go_fish(requested_card)
 			end
 		end
 
