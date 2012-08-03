@@ -100,29 +100,22 @@ class GoFish
 			end
 		end
 
-		def do_you_have_any(requested_card)
+		def do_you_have_any(requested_rank)
 			got_what_they_asked_for = false
-			can_ask_for = false
 
 			# if they player doesn't have at least one of what they are asking for, they can't ask for it:
-			@player.hand.each do |card|
-				if card.include?(requested_card)
-					can_ask_for = true
-				end
-					
-				if can_ask_for == true
-					@dealer.hand.each do |card|
-						if card.include?(requested_card)
-							@player.deal(@dealer.hand.delete(card))
-							puts "The dealer had a #{requested_card}; you add the #{card} to your hand."
-							puts "Updated dealer hand: #{@dealer.tell_hand}."
-							got_what_they_asked_for = true
-						end
+			if @player.hand.map(&:rank).include?(requested_rank)
+				@dealer.hand.each do |card|
+					if card.rank == requested_rank
+						@player.deal(@dealer.hand.delete(card))
+						puts "The dealer had a #{requested_rank}; you add the #{card} to your hand."
+						puts "Updated dealer hand: #{@dealer.tell_hand}."
+						got_what_they_asked_for = true
 					end
-				else
-					puts "You cannot ask for a #{requested_card}, as you do not have any."
-					ask_for
 				end
+			else
+				puts "You cannot ask for a #{requested_rank}, as you do not have any."
+				ask_for
 			end
 
 			if got_what_they_asked_for == true
